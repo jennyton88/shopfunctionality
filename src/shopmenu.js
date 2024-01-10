@@ -38,7 +38,7 @@ class ShopMenu extends Menu {
 
     checkIfShopEmpty() { // find first one that is empty
         for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].spr === 1) { // if it's an empty spot
+            if (this.items[i].spr === 1) {
                 return i;
             }
         }
