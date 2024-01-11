@@ -10,7 +10,7 @@ class Menu {
      * @param {Number} per_column // spaces per column
      * @param {Number} pen_color // from numbered palette colors
      */
-    constructor(spaces, start_x, start_y, per_row, per_column, pen_color) {//, menu_options) {
+    constructor(spaces, start_x, start_y, per_row, per_column, pen_color) {
         this.spaces = spaces;
         this.start_x = start_x;
         this.start_y = start_y;
@@ -18,9 +18,13 @@ class Menu {
         this.per_column = per_column;
         this.pen_color = pen_color;
 
-        //this.menu_options = menu_options; // create an options menu separate
-        this.menu_options = [];
+        this.menus = [];
+
+        this.current_menu = "";
+        this.current_menu_index = -1; // for the selector
+        //this.menu_options = [];
         this.menu_selector_pos = 0;
+        this.menu_selection = {"selected": false, "pos": this.menu_selector_pos}; // could add the current name here for selection
         this.menu_selector = [this.start_x + this.per_row * 11 + 2, this.start_y + 5];
     }
 
@@ -40,31 +44,49 @@ class Menu {
         }
     }
 
-    drawOptionsMenu() { // would have to make box sizing based on the sides of the game, words, and spaces to the left 
+    // drawDescriptorMenu(item) {
+    //     //rect();
+    //     //print(item.label + " " + item.descrip);
+    // }
+
+    drawOptionsMenu(menu_name) { // would have to make box sizing based on the sides of the game, words, and spaces to the left 
+        const index = this.getMenu(menu_name);
+
+        if (index === -1) {
+            return;
+        }
+
         let x = this.start_x + this.per_row * 11 + 4;
         let y = this.start_y + 5;
 
-        for (let i = 0; i < this.menu_options.length; i++) {
-            print(this.menu_options[i].label, x, y);
+        for (let i = 0; i < this.menus[index].menu_options.length; i++) {
+            print(this.menus[index].menu_options[i].label, x, y);
             y += 9;
         }
 
-        const phrases = this.menu_options.length;
+        const phrases = this.menus[index].menu_options.length;
         const word_size = 5 + 4;
         rect(this.start_x + this.per_row * 11, this.start_y, 52, phrases * word_size + 6);
     }
 
-    drawSelector() {
+    drawMenuSelector() {
         sprite(2, this.menu_selector[0], this.menu_selector[1]);
     }
 
-    setSelector() {
-        const options_count = this.menu_options.length;
+    setMenuSelector(menu_name) {
+        const index = this.getMenu(menu_name);
+
+        if (index === -1) {
+            return -1;
+        }
+
+        this.current_menu = menu_name; // could be separated
+        this.current_menu_index = index;
+
+        const options_count = this.menus[index].menu_options.length;
         let selector_pos = this.menu_selector_pos;
-        let selector_pos_x = this.menu_selector[0]; // where the menu shows
         let selector_pos_y = this.menu_selector[1];
 
-        console.log(this.selector_pos);
         if (btnp.up) {
             selector_pos -= 1;
             if (selector_pos < 0) {
@@ -82,22 +104,44 @@ class Menu {
                 selector_pos_y += 9;
             }
         }
-        
+
+        if (btnp.enter) {
+            this.menu_selection.selected = true;
+            this.menu_selection.pos = selector_pos;
+        }
+
         this.menu_selector_pos = selector_pos;
-        this.menu_selector[0] = selector_pos_x
         this.menu_selector[1] = selector_pos_y;
     }
 
-    // drawYesNoMenu() {
-        
+    // addOptionsToMenu(options) {
+    //     for (let i = 0; i < options.length; i++) {
+    //         let option = new Option(options[i]);
+    //         option.setUpOption();
+    //         this.menu_options.push(option);
+    //     }
     // }
 
-    addOptionsToMenu(options) {
+    getMenu(menu_label) {
+        for (let i = 0; i < this.menus.length; i++) {
+            if (menu_label === this.menus[i].menu_label) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    createMenu(menu_label, options) {
+        const menu_options = [];
+
         for (let i = 0; i < options.length; i++) {
             let option = new Option(options[i]);
             option.setUpOption();
-            this.menu_options.push(option);
+            menu_options.push(option);
         }
+
+        this.menus.push({"menu_label": menu_label, "menu_options": menu_options});
     }
 
     // /**
