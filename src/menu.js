@@ -20,6 +20,8 @@ class Menu {
 
         //this.menu_options = menu_options; // create an options menu separate
         this.menu_options = [];
+        this.menu_selector_pos = 0;
+        this.menu_selector = [this.start_x + this.per_row * 11 + 2, this.start_y + 5];
     }
 
     drawMenu() {
@@ -50,6 +52,40 @@ class Menu {
         const phrases = this.menu_options.length;
         const word_size = 5 + 4;
         rect(this.start_x + this.per_row * 11, this.start_y, 52, phrases * word_size + 6);
+    }
+
+    drawSelector() {
+        sprite(2, this.menu_selector[0], this.menu_selector[1]);
+    }
+
+    setSelector() {
+        const options_count = this.menu_options.length;
+        let selector_pos = this.menu_selector_pos;
+        let selector_pos_x = this.menu_selector[0]; // where the menu shows
+        let selector_pos_y = this.menu_selector[1];
+
+        console.log(this.selector_pos);
+        if (btnp.up) {
+            selector_pos -= 1;
+            if (selector_pos < 0) {
+                selector_pos = 0;
+            } else {
+                selector_pos_y -= 9;
+            }
+        }
+        
+        if (btnp.down) {
+            selector_pos += 1;
+            if (selector_pos >= options_count)  {
+                selector_pos = options_count - 1;
+            } else {
+                selector_pos_y += 9;
+            }
+        }
+        
+        this.menu_selector_pos = selector_pos;
+        this.menu_selector[0] = selector_pos_x
+        this.menu_selector[1] = selector_pos_y;
     }
 
     // drawYesNoMenu() {

@@ -1,4 +1,3 @@
-const Menu = require("./menu");
 const ShopMenu = require("./shopmenu");
 
 const map = getMap("map");
@@ -16,5 +15,7 @@ exports.update = function () {
     menu2.drawMenu();
     menu2.drawShopMenu();
     menu2.drawOptionsMenu();
+    menu2.drawSelector();
+    menu2.setSelector();
 
 };
