@@ -26,6 +26,10 @@ class Menu {
         this.menu_selector_pos = 0;
         this.menu_selection = {"selected": false, "pos": this.menu_selector_pos}; // could add the current name here for selection
         this.menu_selector = [this.start_x + this.per_row * 11 + 2, this.start_y + 5];
+
+
+        this.item_selector_pos = 0;
+        this.item_selector = [this.start_x - 1, this.start_y - 1];
     }
 
     drawMenu() {
@@ -142,6 +146,73 @@ class Menu {
         }
 
         this.menus.push({"menu_label": menu_label, "menu_options": menu_options});
+    }
+
+    drawItemSelector() {
+        rect(this.item_selector[0], this.item_selector[1], 12, 12);
+    }
+
+    setItemSelector() {
+        let x = this.item_selector[0];
+        let y = this.item_selector[1];
+        let pos = this.item_selector_pos;
+        let original_pos = pos;
+
+        const spacing = this.per_row;
+
+        if (btnp.up) {
+            pos -= spacing;
+            if (pos < 0) {
+                pos = original_pos;
+            } else {
+                y -= 11;
+            }
+        }
+
+        if (btnp.down) {
+            pos += spacing;
+            if (pos >= this.spaces) {
+                pos = original_pos;
+            } else {
+                y += 11;
+            }
+        }
+
+        if (btnp.left) {
+            pos -= 1;
+            if (pos < 0) {
+                pos = 0;
+            } else if ((pos + 1) % this.per_row === 0) {
+                y -= 11;
+                x += this.per_row * 11 - 11;
+            } else {
+                x -= 11;
+            }
+        }
+
+        if (btnp.right) {
+            pos += 1;
+            if (pos >= this.spaces) {
+                pos = this.spaces - 1;
+            } else if (pos % this.per_row === 0) {
+                y += 11;
+                x -= this.per_row * 11 - 11;
+            } else {
+                x += 11;
+            }
+        }
+
+        this.item_selector_pos = pos;
+        this.item_selector[0] = x;
+        this.item_selector[1] = y;
+    }
+
+    getMenuSelector() {
+        return this.menu_selection;
+    }
+
+    printSelectorPos() {
+        print(this.item_selector_pos);
     }
 
     // /**
